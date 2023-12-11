@@ -15,7 +15,7 @@ export async function getConnection() {
     const pool = await sql.connect(dbSettings);
 
     console.log(
-      `La conexión a ${process.env.DB_DATABASE} ha sido establecida correctamente`
+      `La conexión a ${process.env.DB_DATABASE} ha sido establecida correctamente en el servidor ${process.env.DB_SERVER}`
     );
 
     return pool;

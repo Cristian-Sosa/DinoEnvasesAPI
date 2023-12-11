@@ -1,5 +1,5 @@
 import { check, body } from "express-validator";
-import { CreateNewUserHelper } from "../helpers/user.helper.js";
+import { CreateNewUserHelper } from "../../helpers/v1/user.helper.js";
 
 export const CreateNewUserValidator = [
   check("user", 'El email es incorrecto').exists().isString(),
