@@ -1,6 +1,6 @@
 import { validationResult } from "express-validator";
 
-export const singleUserHelper = (req, res, next) => {
+export const CreateNewUserHelper = (req, res, next) => {
   try {
     validationResult(req).throw();
     return next();

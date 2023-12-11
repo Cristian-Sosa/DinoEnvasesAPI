@@ -1,10 +1,10 @@
-import { check } from "express-validator";
-import { singleUserHelper } from "../helpers/user.helper.js";
+import { check, body } from "express-validator";
+import { CreateNewUserHelper } from "../helpers/user.helper.js";
 
-export const SingleUserValidator = [
-  check("user").exists().isString().not().isEmpty,
-  check("pass").exists().isString().not().isEmpty(),
+export const CreateNewUserValidator = [
+  check("user", 'El email es incorrecto').exists().isString(),
+  check("pass", 'La contraseña es requerida').exists().isString(),
   (req, res, next) => {
-    singleUserHelper(req, res, next);
+    CreateNewUserHelper(req, res, next);
   },
 ];

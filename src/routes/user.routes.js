@@ -1,14 +1,19 @@
 import { Router } from "express";
 import {
   getAllUsuarios,
-  getSingleUsuario,
+  createNewUser,
 } from "../controllers/user.controller.js";
-import { SingleUserValidator } from "../validators/user.validators.js";
+import { CreateNewUserValidator } from "../validators/user.validators.js";
+import { body } from "express-validator";
 
 const router = Router();
 
-router.get("/usuarios", getAllUsuarios);
+router.get("/AllUsers", getAllUsuarios);
 
-router.post("/usuario", SingleUserValidator, getSingleUsuario);
+router.get("/AllActiveUsers", getAllUsuarios);
+
+// router.post("/CreateNewUser", CreateNewUserValidator, createNewUser);
+
+router.post("/CreateNewUser", createNewUser);
 
 export default router;
