@@ -50,9 +50,9 @@ export const validateUser = async (req, res) => {
   try {
     const pool = await getConnection();
 
-    const { user, password } = req.body;
+    const { Usuario, Password } = req.body;
 
-    if (!user || !password) {
+    if (!Usuario || !Password) {
       return res.status(400).json({
         status: 400,
         mensaje: "Los campos 'user' y 'password' son obligatorios",
@@ -63,16 +63,16 @@ export const validateUser = async (req, res) => {
     // * Revisar nombres de la tabla original en caso de error
     let query = await pool
       .request()
-      .input("user", sql.NVarChar, user)
-      .input("password", sql.NVarChar, password)
+      .input("Usuario", sql.NVarChar, Usuario)
+      .input("Password", sql.NVarChar, Password)
       .query(userQuery.getUserByUsernameAndPassword);
 
       const usuario = query.recordset[0];
 
     if (!usuario) {
       return res
-        .status(404)
-        .json({ status: 404, mensaje: "Usuario no encontrado", data: null });
+        .status(400)
+        .json({ status: 400, mensaje: "Usuario no encontrado", data: null });
     } 
 
     let usuarioDTO = {
@@ -101,20 +101,20 @@ export const createNewUser = async (req, res) => {
   try {
     const pool = await getConnection();
 
-    const { dni, name, lastname, user, password } = req.body;
+    const { DNI, Nombre, Apellido, Usuario, Password } = req.body;
 
-    if (!dni || !name || !lastname || !user || !password) {
+    if (!DNI || !Nombre || !Apellido || !Usuario || !Password) {
       res.status(400).json({
         status: 400,
         message:
-          "Los campos 'dni', 'name', 'lastname', 'user' y 'pass' son obligatorios",
+          "Los campos 'DNI', 'Nombre', 'Apellido', 'Usuario' y 'Password' son obligatorios",
         data: null,
       });
     } else {
       const allUsersQuery = await pool.request().query(userQuery.getAllUsers);
 
       let userFilter = await allUsersQuery.recordset.filter(
-        (activeUser) => activeUser.DNI == dni.toString() || activeUser.Usuario == user.toString()
+        (activeUser) => activeUser.DNI == DNI.toString() || activeUser.Usuario == Usuario.toString()
       );
 
       if (userFilter.length !== 0) {
@@ -126,11 +126,11 @@ export const createNewUser = async (req, res) => {
       } else {
         let query = await pool
           .request()
-          .input("dni", sql.NVarChar, dni)
-          .input("name", sql.NVarChar, name)
-          .input("lastname", sql.NVarChar, lastname)
-          .input("user", sql.NVarChar, user)
-          .input("password", sql.NVarChar, password)
+          .input("DNI", sql.NVarChar, DNI)
+          .input("Nombre", sql.NVarChar, Nombre)
+          .input("Apellido", sql.NVarChar, Apellido)
+          .input("Usuario", sql.NVarChar, Usuario)
+          .input("Password", sql.NVarChar, Password)
           .query(userQuery.createNewUser);
 
         res.status(200).json({
