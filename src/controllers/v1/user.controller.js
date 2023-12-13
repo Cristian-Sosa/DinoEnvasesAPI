@@ -3,7 +3,6 @@ import { userQuery } from "../../database/user.query.js";
 
 import sql from "mssql";
 
-
 export const getAllUsers = async (req, res) => {
   try {
     const pool = await getConnection();
@@ -22,6 +21,22 @@ export const getAllUsers = async (req, res) => {
       message: error.message,
       data: null,
     });
+  }
+};
+
+export const getUserById = async (UsuarioId) => {
+  try {
+    const pool = await getConnection();
+
+    // Test DB at work
+    let query = await pool
+      .request()
+      .input("UsuarioId", sql.Int, UsuarioId)
+      .query(userQuery.getUserById);
+
+    return query.recordset[0];
+  } catch (error) {
+    return null;
   }
 };
 
@@ -67,20 +82,20 @@ export const validateUser = async (req, res) => {
       .input("Password", sql.NVarChar, Password)
       .query(userQuery.getUserByUsernameAndPassword);
 
-      const usuario = query.recordset[0];
+    const usuario = query.recordset[0];
 
     if (!usuario) {
       return res
         .status(400)
         .json({ status: 400, mensaje: "Usuario no encontrado", data: null });
-    } 
+    }
 
     let usuarioDTO = {
-      id: usuario.Id,
-      nombre: usuario.Nombre,
-      apellido: usuario.Apellido,
-      usuario: usuario.Usuario,
-      habilitado: usuario.Habilitado,
+      Id: usuario.Id,
+      Nombre: usuario.Nombre,
+      Apellido: usuario.Apellido,
+      Usuario: usuario.Usuario,
+      Habilitado: usuario.Habilitado,
     };
 
     return res.status(200).json({
@@ -114,7 +129,9 @@ export const createNewUser = async (req, res) => {
       const allUsersQuery = await pool.request().query(userQuery.getAllUsers);
 
       let userFilter = await allUsersQuery.recordset.filter(
-        (activeUser) => activeUser.DNI == DNI.toString() || activeUser.Usuario == Usuario.toString()
+        (activeUser) =>
+          activeUser.DNI == DNI.toString() ||
+          activeUser.Usuario == Usuario.toString()
       );
 
       if (userFilter.length !== 0) {
